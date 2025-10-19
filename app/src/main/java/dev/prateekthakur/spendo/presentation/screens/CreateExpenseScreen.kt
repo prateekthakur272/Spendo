@@ -109,7 +109,7 @@ fun NumberPad(
                                     .aspectRatio(1f)
                                     .padding(2.dp)
                             ) {
-                                Text(column, style = MaterialTheme.typography.titleMedium)
+                                Text(column, style = MaterialTheme.typography.headlineMedium)
                             }
                         }
                     }
@@ -123,7 +123,7 @@ fun NumberPad(
                             .aspectRatio(2f)
                             .padding(2.dp)
                     ) {
-                        Text("0", style = MaterialTheme.typography.titleMedium)
+                        Text("0", style = MaterialTheme.typography.headlineMedium)
                     }
                     NumberPadButton(
                         onClick = {
@@ -133,7 +133,7 @@ fun NumberPad(
                             .aspectRatio(1f)
                             .padding(2.dp)
                     ) {
-                        Text(".", style = MaterialTheme.typography.titleMedium)
+                        Text(".", style = MaterialTheme.typography.headlineMedium)
                     }
                 }
             }
