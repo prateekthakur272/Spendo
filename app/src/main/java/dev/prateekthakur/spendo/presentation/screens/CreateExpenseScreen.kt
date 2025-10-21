@@ -5,19 +5,24 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -25,15 +30,22 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavHostController
 import dev.prateekthakur.spendo.R
+import dev.prateekthakur.spendo.domain.models.Expense
+import dev.prateekthakur.spendo.domain.models.ExpenseType
 import dev.prateekthakur.spendo.presentation.composables.InvisibleTextField
+import dev.prateekthakur.spendo.presentation.viewmodels.ExpenseViewModel
+import dev.prateekthakur.spendo.utils.getColor
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun CreateExpenseScreen(modifier: Modifier = Modifier) {
+fun CreateExpenseScreen(expenseViewModel: ExpenseViewModel, navHostController: NavHostController, modifier: Modifier = Modifier) {
     var amount by rememberSaveable { mutableStateOf("") }
     var comment by rememberSaveable { mutableStateOf("") }
+    var type by remember { mutableStateOf(ExpenseType.ANONYMOUS) }
+    var showSelector by remember { mutableStateOf(true) }
 
     Scaffold { safePadding ->
         Column(
@@ -53,6 +65,19 @@ fun CreateExpenseScreen(modifier: Modifier = Modifier) {
                 style = MaterialTheme.typography.displayLarge,
             )
 
+            Box(
+                modifier = modifier
+                    .clip(RoundedCornerShape(24.dp))
+                    .background(getColor(type))
+                    .clickable {
+                        showSelector = true
+                    }
+                    .padding(horizontal = 28.dp, vertical = 16.dp)
+            ) {
+                Text(type.name, style = MaterialTheme.typography.labelMedium)
+            }
+            Spacer(modifier = modifier.height(16.dp))
+
             InvisibleTextField(
                 value = comment,
                 onValueChange = { comment = it.trim() },
@@ -64,21 +89,37 @@ fun CreateExpenseScreen(modifier: Modifier = Modifier) {
                 if (amount.isEmpty() && it == "0") return@NumberPad
                 if (amount.isEmpty() && it == ".") return@NumberPad
                 if (amount.contains(".") && it == ".") return@NumberPad
-                amount+=it
+                amount += it
             }, onDelete = {
                 amount = amount.dropLast(1)
             }, onSubmit = {
-
+                amount.toDoubleOrNull()?.let {
+                    expenseViewModel.createExpense(Expense(amount = it, type = type))
+                    navHostController.popBackStack()
+                }
             })
         }
     }
-}
 
-
-@Preview
-@Composable
-private fun CreateExpenseScreenPreview() {
-    CreateExpenseScreen()
+    if (showSelector) {
+        ModalBottomSheet(
+            onDismissRequest = { showSelector = false },
+            containerColor = MaterialTheme.colorScheme.background
+        ) {
+            FlowRow(
+                modifier = Modifier.padding(8.dp),
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                verticalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                ExpenseType.entries.toList().map {
+                    ExpenseTypeChip(it, onClick = {
+                        type = it
+                        showSelector = false
+                    })
+                }
+            }
+        }
+    }
 }
 
 @Composable
@@ -186,12 +227,6 @@ fun NumberPad(
     }
 }
 
-@Preview(showBackground = true)
-@Composable
-private fun NumberPadPreview() {
-    NumberPad(onType = {}, onDelete = {}, onSubmit = {})
-}
-
 @Composable
 private fun NumberPadButton(
     onClick: () -> Unit,
@@ -207,5 +242,20 @@ private fun NumberPadButton(
         contentAlignment = Alignment.Center,
     ) {
         content()
+    }
+}
+
+@Composable
+fun ExpenseTypeChip(type: ExpenseType, onClick: () -> Unit, modifier: Modifier = Modifier) {
+    Box(
+        modifier = modifier
+            .clip(RoundedCornerShape(24.dp))
+            .background(getColor(type))
+            .clickable {
+                onClick()
+            }
+            .padding(horizontal = 28.dp, vertical = 16.dp)
+    ) {
+        Text(type.name, style = MaterialTheme.typography.labelMedium)
     }
 }

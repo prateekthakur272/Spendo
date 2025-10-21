@@ -7,6 +7,7 @@ import dev.prateekthakur.spendo.domain.repository.ExpenseRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import timber.log.Timber
 
 class ExpenseViewModel(private val expenseRepository: ExpenseRepository) : ViewModel() {
 
@@ -16,6 +17,7 @@ class ExpenseViewModel(private val expenseRepository: ExpenseRepository) : ViewM
     init {
         viewModelScope.launch {
             expenseRepository.get().collect {
+                Timber.d(it.toString())
                 _state.emit(it)
             }
         }

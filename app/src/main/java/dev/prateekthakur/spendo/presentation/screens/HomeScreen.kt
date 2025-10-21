@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -29,6 +30,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.navigation.NavHostController
 import com.himanshoe.charty.bar.BarChart
 import com.himanshoe.charty.bar.model.BarData
 import com.himanshoe.charty.common.ChartColor
@@ -42,7 +44,7 @@ import dev.prateekthakur.spendo.presentation.viewmodels.ExpenseViewModel
 import dev.prateekthakur.spendo.utils.getColor
 
 @Composable
-fun HomeScreen(expenseViewModel: ExpenseViewModel, modifier: Modifier = Modifier) {
+fun HomeScreen(expenseViewModel: ExpenseViewModel, navHostController: NavHostController, modifier: Modifier = Modifier) {
 
     val expenses by expenseViewModel.state.collectAsStateWithLifecycle()
     val categoryExpenses = expenses.groupBy { it.type }.map { (k, v) ->
@@ -52,8 +54,10 @@ fun HomeScreen(expenseViewModel: ExpenseViewModel, modifier: Modifier = Modifier
         )
     }
 
-    Scaffold(containerColor = MaterialTheme.colorScheme.surface, floatingActionButton = {
-        FloatingActionButton(onClick = {}) {
+    Scaffold(floatingActionButton = {
+        FloatingActionButton(onClick = {
+            navHostController.navigate("/create")
+        }) {
             Icon(
                 Icons.Default.Add,
                 contentDescription = null,
@@ -61,17 +65,25 @@ fun HomeScreen(expenseViewModel: ExpenseViewModel, modifier: Modifier = Modifier
             )
         }
     }) { safePadding ->
-        Column(
+        LazyColumn(
             modifier = modifier
                 .padding(safePadding)
                 .padding(horizontal = 16.dp)
         ) {
-            Spacer(modifier = Modifier.height(16.dp))
-            HomeScreenHeader()
-            OverviewCard(categoryExpenses)
-            Spacer(modifier = Modifier.height(16.dp))
-            ExpenseCategories(categoryExpenses)
-            RecentExpenses(expenses.take(5))
+            item {
+                Spacer(modifier = Modifier.height(16.dp))
+                HomeScreenHeader()
+            }
+            item {
+                OverviewCard(categoryExpenses)
+                Spacer(modifier = Modifier.height(16.dp))
+            }
+            item {
+                ExpenseCategories(categoryExpenses)
+            }
+            item {
+                RecentExpenses(expenses.take(5))
+            }
         }
     }
 }
