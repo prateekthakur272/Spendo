@@ -5,6 +5,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import dev.prateekthakur.spendo.domain.models.ExpenseType
 import dev.prateekthakur.spendo.presentation.viewmodels.ExpenseViewModel
 import org.koin.androidx.compose.koinViewModel
 
@@ -25,6 +26,13 @@ fun AppNavHost(
             CreateExpenseScreen(
                 expenseViewModel = expenseViewModel,
                 navHostController = navHostController
+            )
+        }
+        composable("/expenses?type={type}") {
+            val type = it.arguments?.getString("type")
+            ExpensesScreen(
+                expenseViewModel = expenseViewModel,
+                type = type?.runCatching { ExpenseType.valueOf(type) }?.getOrNull()
             )
         }
     }
