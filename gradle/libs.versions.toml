@@ -13,6 +13,8 @@ composeBom = "2024.09.00"
 roomRuntime = "2.8.2"
 timber = "5.0.1"
 navigationCompose = "2.9.5"
+uiTextGoogleFonts = "1.10.0-alpha05"
+charty = "2.1.0-beta03.4"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -36,6 +38,8 @@ koin-android = { module = "io.insert-koin:koin-android", version.ref = "koinAndr
 koin-androidx-compose = { module = "io.insert-koin:koin-androidx-compose", version.ref = "koinAndroidxCompose" }
 timber = { module = "com.jakewharton.timber:timber", version.ref = "timber" }
 androidx-navigation-compose = { group = "androidx.navigation", name = "navigation-compose", version.ref = "navigationCompose" }
+androidx-ui-text-google-fonts = { group = "androidx.compose.ui", name = "ui-text-google-fonts", version.ref = "uiTextGoogleFonts" }
+charty = { group = "com.himanshoe", name = "charty", version.ref = "charty" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
