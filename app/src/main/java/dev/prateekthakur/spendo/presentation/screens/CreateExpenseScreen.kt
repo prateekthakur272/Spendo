@@ -47,7 +47,7 @@ fun CreateExpenseScreen(expenseViewModel: ExpenseViewModel, navHostController: N
     var type by remember { mutableStateOf(ExpenseType.ANONYMOUS) }
     var showSelector by remember { mutableStateOf(true) }
 
-    Scaffold { safePadding ->
+    Scaffold(containerColor = MaterialTheme.colorScheme.surface) { safePadding ->
         Column(
             modifier = modifier
                 .padding(safePadding)
@@ -104,7 +104,6 @@ fun CreateExpenseScreen(expenseViewModel: ExpenseViewModel, navHostController: N
     if (showSelector) {
         ModalBottomSheet(
             onDismissRequest = { showSelector = false },
-            containerColor = MaterialTheme.colorScheme.background
         ) {
             FlowRow(
                 modifier = Modifier.padding(8.dp),

@@ -39,5 +39,8 @@ fun AppNavHost(
                 periodFilter = periodFilter?.runCatching { PeriodFilter.valueOf(periodFilter) }?.getOrNull()
             )
         }
+        composable("/settings") {
+            SettingsScreen(expenseViewModel = expenseViewModel, navHostController = navHostController)
+        }
     }
 }

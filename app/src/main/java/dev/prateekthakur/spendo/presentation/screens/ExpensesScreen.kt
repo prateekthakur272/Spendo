@@ -1,5 +1,6 @@
 package dev.prateekthakur.spendo.presentation.screens
 
+
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.FlowRow
@@ -20,7 +21,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -50,7 +50,11 @@ fun ExpensesScreen(
 
     val expenses by expenseViewModel.state.collectAsStateWithLifecycle()
 
-    var selectedPeriod by rememberSaveable { mutableStateOf(periodFilter ?: PeriodFilter.LAST_MONTH) }
+    var selectedPeriod by rememberSaveable {
+        mutableStateOf(
+            periodFilter ?: PeriodFilter.LAST_MONTH
+        )
+    }
     var selectedType by rememberSaveable { mutableStateOf(typeFilter) }
 
     LaunchedEffect(selectedPeriod, selectedType) {
@@ -58,17 +62,14 @@ fun ExpensesScreen(
     }
 
     Scaffold(
-        topBar = {
-            TopAppBar(
-                colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = MaterialTheme.colorScheme.background
-                ), title = { Text("Expenses") }, navigationIcon = {
-                    IconButton(onClick = {
-                        navHostController.popBackStack()
-                    }) {
-                        Icon(Icons.AutoMirrored.Default.ArrowBack, contentDescription = null)
-                    }
-                })
+        containerColor = MaterialTheme.colorScheme.surface, topBar = {
+            TopAppBar(title = { Text("Expenses") }, navigationIcon = {
+                IconButton(onClick = {
+                    navHostController.popBackStack()
+                }) {
+                    Icon(Icons.AutoMirrored.Default.ArrowBack, contentDescription = null)
+                }
+            })
         }) { safePadding ->
         LazyColumn(
             modifier = modifier
@@ -118,8 +119,8 @@ fun ExpensesScreen(
                         style = MaterialTheme.typography.labelMedium,
                         color = MaterialTheme.colorScheme.tertiary
                     )
-                    DisplayAmount(expenses.map { it.amount }
-                        .reduceOrNull { acc, d -> acc + d } ?: 0.0,
+                    DisplayAmount(expenses.map { it.amount }.reduceOrNull { acc, d -> acc + d }
+                        ?: 0.0,
                         textStyle = MaterialTheme.typography.labelMedium.copy(color = MaterialTheme.colorScheme.tertiary))
                 }
                 Spacer(modifier = Modifier.height(16.dp))

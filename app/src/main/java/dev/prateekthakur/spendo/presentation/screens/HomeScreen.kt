@@ -1,6 +1,7 @@
 package dev.prateekthakur.spendo.presentation.screens
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -12,23 +13,25 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.outlined.Settings
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
+import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
@@ -36,6 +39,7 @@ import com.himanshoe.charty.bar.BarChart
 import com.himanshoe.charty.bar.model.BarData
 import com.himanshoe.charty.common.ChartColor
 import com.himanshoe.charty.common.LabelConfig
+import dev.prateekthakur.spendo.R
 import dev.prateekthakur.spendo.domain.models.CategoryExpense
 import dev.prateekthakur.spendo.domain.models.Expense
 import dev.prateekthakur.spendo.presentation.composables.CategoryExpenseListItem
@@ -60,7 +64,11 @@ fun HomeScreen(
         expenseViewModel.getExpenses()
     }
 
-    Scaffold(floatingActionButton = {
+    Scaffold(containerColor = MaterialTheme.colorScheme.surface, topBar = {
+        AppBar(onSettingsClick = {
+            navHostController.navigate("/settings")
+        })
+    }, floatingActionButton = {
         FloatingActionButton(onClick = {
             navHostController.navigate("/create")
         }) {
@@ -76,10 +84,6 @@ fun HomeScreen(
                 .padding(safePadding)
                 .padding(horizontal = 16.dp)
         ) {
-            item {
-                Spacer(modifier = Modifier.height(16.dp))
-                HomeScreenHeader()
-            }
             item {
                 OverviewCard(categoryExpenses)
                 Spacer(modifier = Modifier.height(16.dp))
@@ -127,35 +131,24 @@ fun OverviewCard(categoryExpenses: List<CategoryExpense>, modifier: Modifier = M
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun HomeScreenHeader(modifier: Modifier = Modifier) {
-    Row(modifier = modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
-        Box(
-            modifier = Modifier
-                .size(48.dp)
-                .clip(CircleShape)
-                .background(MaterialTheme.colorScheme.primaryContainer)
-        )
-
-        Spacer(modifier = Modifier.width(16.dp))
-
-        Column {
-            Text("Welcome!", style = MaterialTheme.typography.labelSmall)
-            Text("Prateek Thakur")
-        }
-
-        Spacer(modifier = Modifier.weight(1f))
-
-        Box(
-            modifier = Modifier
-                .size(40.dp)
-                .clip(RoundedCornerShape(8.dp))
-                .background(MaterialTheme.colorScheme.surfaceVariant),
-            contentAlignment = Alignment.Center
-        ) {
+fun AppBar(onSettingsClick: () -> Unit, modifier: Modifier = Modifier) {
+    TopAppBar(title = {
+        Text(stringResource(R.string.app_name))
+    }, actions = {
+        Box(modifier = Modifier
+            .size(40.dp)
+            .clip(RoundedCornerShape(8.dp))
+            .clickable {
+                onSettingsClick()
+            }
+            .background(MaterialTheme.colorScheme.surfaceVariant),
+            contentAlignment = Alignment.Center) {
             Icon(Icons.Outlined.Settings, contentDescription = null)
         }
-    }
+        Spacer(modifier = Modifier.width(8.dp))
+    })
 }
 
 @Composable

@@ -9,8 +9,6 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.Build
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -19,26 +17,18 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import dev.prateekthakur.spendo.domain.models.CategoryExpense
 import dev.prateekthakur.spendo.domain.models.Expense
-import dev.prateekthakur.spendo.domain.models.ExpenseType
 import dev.prateekthakur.spendo.utils.getColor
+import dev.prateekthakur.spendo.utils.getIcon
 import java.util.Date
 
 
 @Composable
 fun ExpenseListItem(expense: Expense, modifier: Modifier = Modifier) {
-
-    val icon = when (expense.type) {
-        ExpenseType.ANONYMOUS -> Icons.Outlined.Build
-        ExpenseType.FOOD -> Icons.Outlined.Build
-        ExpenseType.UTILITY -> Icons.Outlined.Build
-        ExpenseType.TRAVEL -> Icons.Outlined.Build
-        ExpenseType.MOVIE -> Icons.Outlined.Build
-        ExpenseType.HOUSEHOLD -> Icons.Outlined.Build
-    }
 
     Row(modifier = modifier, verticalAlignment = Alignment.CenterVertically) {
         Box(
@@ -48,7 +38,11 @@ fun ExpenseListItem(expense: Expense, modifier: Modifier = Modifier) {
                 .background(getColor(expense.type)),
             contentAlignment = Alignment.Center
         ) {
-            Icon(icon, contentDescription = null, tint = MaterialTheme.colorScheme.surface)
+            Icon(
+                painterResource(getIcon(expense.type)),
+                contentDescription = null,
+                tint = MaterialTheme.colorScheme.surface
+            )
         }
         Spacer(modifier = modifier.width(12.dp))
         Column {
@@ -74,24 +68,18 @@ fun ExpenseListItem(expense: Expense, modifier: Modifier = Modifier) {
 @Composable
 fun CategoryExpenseListItem(categoryExpense: CategoryExpense, modifier: Modifier = Modifier) {
 
-    val icon = when (categoryExpense.type) {
-        ExpenseType.ANONYMOUS -> Icons.Outlined.Build
-        ExpenseType.FOOD -> Icons.Outlined.Build
-        ExpenseType.UTILITY -> Icons.Outlined.Build
-        ExpenseType.TRAVEL -> Icons.Outlined.Build
-        ExpenseType.MOVIE -> Icons.Outlined.Build
-        ExpenseType.HOUSEHOLD -> Icons.Outlined.Build
-    }
-
     Row(modifier = modifier, verticalAlignment = Alignment.CenterVertically) {
         Box(
             modifier = Modifier
                 .size(48.dp)
                 .clip(CircleShape)
-                .background(getColor(categoryExpense.type)),
-            contentAlignment = Alignment.Center
+                .background(getColor(categoryExpense.type)), contentAlignment = Alignment.Center
         ) {
-            Icon(icon, contentDescription = null, tint = MaterialTheme.colorScheme.surface)
+            Icon(
+                painterResource(getIcon(categoryExpense.type)),
+                contentDescription = null,
+                tint = MaterialTheme.colorScheme.surface
+            )
         }
         Spacer(modifier = modifier.width(12.dp))
         Column {

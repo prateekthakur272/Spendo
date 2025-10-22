@@ -34,4 +34,10 @@ class ExpenseViewModel(private val expenseRepository: ExpenseRepository) : ViewM
             expenseRepository.delete(expense)
         }
     }
+
+    fun clearExpenses(){
+        viewModelScope.launch {
+            expenseRepository.deleteAll()
+        }
+    }
 }
