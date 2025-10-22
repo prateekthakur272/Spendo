@@ -45,14 +45,15 @@ import dev.prateekthakur.spendo.presentation.viewmodels.ExpenseViewModel
 import dev.prateekthakur.spendo.utils.getColor
 
 @Composable
-fun HomeScreen(expenseViewModel: ExpenseViewModel, navHostController: NavHostController, modifier: Modifier = Modifier) {
+fun HomeScreen(
+    expenseViewModel: ExpenseViewModel,
+    navHostController: NavHostController,
+    modifier: Modifier = Modifier
+) {
 
     val expenses by expenseViewModel.state.collectAsStateWithLifecycle()
     val categoryExpenses = expenses.groupBy { it.type }.map { (k, v) ->
-        CategoryExpense(
-            type = k,
-            total = v.map { it.amount }.reduceOrNull { a, b -> a + b } ?: 0.0
-        )
+        CategoryExpense(type = k, total = v.map { it.amount }.reduceOrNull { a, b -> a + b } ?: 0.0)
     }
 
     LaunchedEffect(Unit) {
@@ -84,7 +85,9 @@ fun HomeScreen(expenseViewModel: ExpenseViewModel, navHostController: NavHostCon
                 Spacer(modifier = Modifier.height(16.dp))
             }
             item {
-                ExpenseCategories(categoryExpenses)
+                ExpenseCategories(categoryExpenses, onAction = {
+                    navHostController.navigate("/expenses")
+                })
             }
             item {
                 RecentExpenses(expenses.take(5), onAction = {
@@ -113,8 +116,7 @@ fun OverviewCard(categoryExpenses: List<CategoryExpense>, modifier: Modifier = M
             Spacer(modifier = modifier.height(16.dp))
             BarChart(
                 { chartData },
-                modifier = Modifier
-                    .height(100.dp),
+                modifier = Modifier.height(100.dp),
                 labelConfig = LabelConfig.default().copy(
                     showYLabel = true,
                     showXLabel = false,
@@ -178,7 +180,9 @@ fun RecentExpenses(expenses: List<Expense>, onAction: () -> Unit, modifier: Modi
 }
 
 @Composable
-fun ExpenseCategories(categoryExpenses: List<CategoryExpense>, modifier: Modifier = Modifier) {
+fun ExpenseCategories(
+    categoryExpenses: List<CategoryExpense>, onAction: () -> Unit, modifier: Modifier = Modifier
+) {
     Column(modifier = modifier) {
         Row(
             verticalAlignment = Alignment.CenterVertically,
@@ -186,7 +190,7 @@ fun ExpenseCategories(categoryExpenses: List<CategoryExpense>, modifier: Modifie
             modifier = Modifier.fillMaxWidth()
         ) {
             Text("Expense per category")
-            TextButton(onClick = {}) {
+            TextButton(onClick = onAction) {
                 Text("View all")
             }
         }
