@@ -95,7 +95,7 @@ fun CreateExpenseScreen(expenseViewModel: ExpenseViewModel, navHostController: N
             }, onSubmit = {
                 amount.toDoubleOrNull()?.let {
                     expenseViewModel.createExpense(Expense(amount = it, type = type))
-                    navHostController.popBackStack()
+                    navHostController.safePopBackStack()
                 }
             })
         }

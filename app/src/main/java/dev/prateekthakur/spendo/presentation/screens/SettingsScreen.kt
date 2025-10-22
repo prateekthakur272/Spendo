@@ -52,7 +52,7 @@ fun SettingsScreen(
                 Text("Settings")
             }, navigationIcon = {
                 IconButton(onClick = {
-                    navHostController.popBackStack()
+                    navHostController.safePopBackStack()
                 }) {
                     Icon(Icons.AutoMirrored.Default.ArrowBack, contentDescription = null)
                 }

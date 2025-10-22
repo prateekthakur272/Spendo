@@ -1,6 +1,7 @@
 package dev.prateekthakur.spendo.presentation.screens
 
 import androidx.compose.runtime.Composable
+import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -42,5 +43,11 @@ fun AppNavHost(
         composable("/settings") {
             SettingsScreen(expenseViewModel = expenseViewModel, navHostController = navHostController)
         }
+    }
+}
+
+fun NavController.safePopBackStack() {
+    if (this.previousBackStackEntry != null) {
+        this.popBackStack()
     }
 }

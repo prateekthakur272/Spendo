@@ -65,7 +65,7 @@ fun ExpensesScreen(
         containerColor = MaterialTheme.colorScheme.surface, topBar = {
             TopAppBar(title = { Text("Expenses") }, navigationIcon = {
                 IconButton(onClick = {
-                    navHostController.popBackStack()
+                    navHostController.safePopBackStack()
                 }) {
                     Icon(Icons.AutoMirrored.Default.ArrowBack, contentDescription = null)
                 }
