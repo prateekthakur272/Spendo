@@ -1,3 +1,5 @@
+import com.android.build.gradle.internal.api.BaseVariantOutputImpl
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
@@ -20,12 +22,20 @@ android {
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
+    splits {
+        abi {
+            isEnable = true
+            isUniversalApk = true
+            reset()
+            include("armeabi-v7a", "arm64-v8a")
+        }
+    }
+
     buildTypes {
         release {
             isMinifyEnabled = false
             proguardFiles(
-                getDefaultProguardFile("proguard-android-optimize.txt"),
-                "proguard-rules.pro"
+                getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro"
             )
         }
     }
@@ -38,6 +48,13 @@ android {
     }
     buildFeatures {
         compose = true
+    }
+
+    applicationVariants.all {
+        outputs.all {
+            val output = this as BaseVariantOutputImpl
+            output.outputFileName = "spendo-$versionName-$name.apk"
+        }
     }
 }
 
