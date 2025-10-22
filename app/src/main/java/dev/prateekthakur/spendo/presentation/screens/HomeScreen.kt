@@ -24,6 +24,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -54,6 +55,10 @@ fun HomeScreen(expenseViewModel: ExpenseViewModel, navHostController: NavHostCon
         )
     }
 
+    LaunchedEffect(Unit) {
+        expenseViewModel.getExpenses()
+    }
+
     Scaffold(floatingActionButton = {
         FloatingActionButton(onClick = {
             navHostController.navigate("/create")
@@ -82,7 +87,9 @@ fun HomeScreen(expenseViewModel: ExpenseViewModel, navHostController: NavHostCon
                 ExpenseCategories(categoryExpenses)
             }
             item {
-                RecentExpenses(expenses.take(5))
+                RecentExpenses(expenses.take(5), onAction = {
+                    navHostController.navigate("/expenses")
+                })
             }
         }
     }
@@ -150,7 +157,7 @@ fun HomeScreenHeader(modifier: Modifier = Modifier) {
 }
 
 @Composable
-fun RecentExpenses(expenses: List<Expense>, modifier: Modifier = Modifier) {
+fun RecentExpenses(expenses: List<Expense>, onAction: () -> Unit, modifier: Modifier = Modifier) {
     Column(modifier = modifier) {
         Row(
             verticalAlignment = Alignment.CenterVertically,
@@ -158,7 +165,7 @@ fun RecentExpenses(expenses: List<Expense>, modifier: Modifier = Modifier) {
             modifier = Modifier.fillMaxWidth()
         ) {
             Text("Recent expenses")
-            TextButton(onClick = {}) {
+            TextButton(onClick = onAction) {
                 Text("View all")
             }
         }
