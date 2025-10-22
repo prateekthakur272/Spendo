@@ -57,6 +57,7 @@ dependencies {
     implementation(libs.androidx.navigation.compose)
     implementation(libs.androidx.ui.text.google.fonts)
     implementation(libs.charty)
+    implementation(libs.accompanist.permissions)
     ksp(libs.androidx.room.compiler)
     implementation(libs.androidx.room.ktx)
     // Koin

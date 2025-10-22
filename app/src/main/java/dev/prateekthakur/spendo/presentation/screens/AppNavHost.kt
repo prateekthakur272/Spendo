@@ -1,22 +1,33 @@
 package dev.prateekthakur.spendo.presentation.screens
 
+import android.Manifest
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.google.accompanist.permissions.ExperimentalPermissionsApi
+import com.google.accompanist.permissions.rememberPermissionState
 import dev.prateekthakur.spendo.domain.models.ExpenseType
 import dev.prateekthakur.spendo.domain.models.PeriodFilter
 import dev.prateekthakur.spendo.presentation.viewmodels.ExpenseViewModel
 import org.koin.androidx.compose.koinViewModel
 
+@OptIn(ExperimentalPermissionsApi::class)
 @Composable
 fun AppNavHost(
     startDestination: String,
     navHostController: NavHostController = rememberNavController()
 ) {
     val expenseViewModel: ExpenseViewModel = koinViewModel()
+    val smsPermissionState = rememberPermissionState(permission = Manifest.permission.RECEIVE_SMS)
+
+    LaunchedEffect(Unit) {
+        smsPermissionState.launchPermissionRequest()
+    }
+
     NavHost(navController = navHostController, startDestination = startDestination) {
         composable("/") {
             HomeScreen(
