@@ -6,5 +6,6 @@ enum class ExpenseType {
     UTILITY,
     TRAVEL,
     MOVIE,
-    HOUSEHOLD
+    HOUSEHOLD,
+    SHOPPING,
 }

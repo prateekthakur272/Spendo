@@ -1,4 +1,4 @@
-package dev.prateekthakur.spendo.ui.theme
+package dev.prateekthakur.spendo.presentation.theme
 
 import androidx.compose.ui.graphics.Color
 
@@ -79,3 +79,5 @@ val expenseTypeUtility = Color(0xFF82E8E8)
 val expenseTypeTravel = Color(0xFF9393F6)
 val expenseTypeMovie = Color(0xFFEC8989)
 val expenseTypeHousehold = Color(0xFFE0D380)
+
+val expenseTypeShopping= Color(0xFFCA7EDE)

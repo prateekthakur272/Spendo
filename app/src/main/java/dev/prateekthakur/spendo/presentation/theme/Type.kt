@@ -1,4 +1,4 @@
-package dev.prateekthakur.spendo.ui.theme
+package dev.prateekthakur.spendo.presentation.theme
 
 import androidx.compose.material3.Typography
 import androidx.compose.ui.text.font.FontFamily

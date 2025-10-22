@@ -5,7 +5,7 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import dev.prateekthakur.spendo.presentation.screens.AppNavHost
-import dev.prateekthakur.spendo.ui.theme.AppTheme
+import dev.prateekthakur.spendo.presentation.theme.AppTheme
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
