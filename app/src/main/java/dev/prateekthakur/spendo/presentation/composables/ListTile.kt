@@ -2,6 +2,7 @@ package dev.prateekthakur.spendo.presentation.composables
 
 import android.text.format.DateFormat
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -66,9 +67,15 @@ fun ExpenseListItem(expense: Expense, modifier: Modifier = Modifier) {
 }
 
 @Composable
-fun CategoryExpenseListItem(categoryExpense: CategoryExpense, modifier: Modifier = Modifier) {
+fun CategoryExpenseListItem(
+    categoryExpense: CategoryExpense,
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier
+) {
 
-    Row(modifier = modifier, verticalAlignment = Alignment.CenterVertically) {
+    Row(modifier = modifier.clickable {
+        onClick()
+    }, verticalAlignment = Alignment.CenterVertically) {
         Box(
             modifier = Modifier
                 .size(48.dp)
@@ -82,14 +89,14 @@ fun CategoryExpenseListItem(categoryExpense: CategoryExpense, modifier: Modifier
             )
         }
         Spacer(modifier = modifier.width(12.dp))
-        Column {
-            Text(
-                categoryExpense.type.name, style = MaterialTheme.typography.labelMedium
-            )
-            DisplayAmount(
-                categoryExpense.total,
-                textStyle = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold)
-            )
-        }
+        Text(
+            categoryExpense.type.name,
+            style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold)
+        )
+        Spacer(modifier = Modifier.weight(1f))
+        DisplayAmount(
+            categoryExpense.total,
+            textStyle = MaterialTheme.typography.titleMedium
+        )
     }
 }

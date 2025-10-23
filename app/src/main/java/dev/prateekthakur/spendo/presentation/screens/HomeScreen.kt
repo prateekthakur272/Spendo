@@ -42,6 +42,7 @@ import com.himanshoe.charty.common.LabelConfig
 import dev.prateekthakur.spendo.R
 import dev.prateekthakur.spendo.domain.models.CategoryExpense
 import dev.prateekthakur.spendo.domain.models.Expense
+import dev.prateekthakur.spendo.domain.models.ExpenseType
 import dev.prateekthakur.spendo.presentation.composables.CategoryExpenseListItem
 import dev.prateekthakur.spendo.presentation.composables.DisplayAmount
 import dev.prateekthakur.spendo.presentation.composables.ExpenseListItem
@@ -92,6 +93,8 @@ fun HomeScreen(
             item {
                 ExpenseCategories(categoryExpenses, onAction = {
                     navHostController.navigate("/expenses")
+                }, onClickItem = {
+                    navHostController.navigate("/expenses?type=$it")
                 })
             }
             item {
@@ -138,13 +141,14 @@ fun AppBar(onSettingsClick: () -> Unit, modifier: Modifier = Modifier) {
     TopAppBar(title = {
         Text(stringResource(R.string.app_name))
     }, actions = {
-        Box(modifier = Modifier
-            .size(40.dp)
-            .clip(RoundedCornerShape(8.dp))
-            .clickable {
-                onSettingsClick()
-            }
-            .background(MaterialTheme.colorScheme.surfaceVariant),
+        Box(
+            modifier = Modifier
+                .size(40.dp)
+                .clip(RoundedCornerShape(8.dp))
+                .clickable {
+                    onSettingsClick()
+                }
+                .background(MaterialTheme.colorScheme.surfaceVariant),
             contentAlignment = Alignment.Center) {
             Icon(Icons.Outlined.Settings, contentDescription = null)
         }
@@ -175,7 +179,10 @@ fun RecentExpenses(expenses: List<Expense>, onAction: () -> Unit, modifier: Modi
 
 @Composable
 fun ExpenseCategories(
-    categoryExpenses: List<CategoryExpense>, onAction: () -> Unit, modifier: Modifier = Modifier
+    categoryExpenses: List<CategoryExpense>,
+    onAction: () -> Unit,
+    onClickItem: (ExpenseType) -> Unit,
+    modifier: Modifier = Modifier
 ) {
     Column(modifier = modifier) {
         Row(
@@ -190,7 +197,7 @@ fun ExpenseCategories(
         }
 
         categoryExpenses.map {
-            CategoryExpenseListItem(it)
+            CategoryExpenseListItem(it, onClick = { onClickItem(it.type) })
             Spacer(modifier = Modifier.height(16.dp))
         }
     }
