@@ -37,14 +37,24 @@ import androidx.navigation.NavHostController
 import dev.prateekthakur.spendo.presentation.viewmodels.ExpenseIntent
 import dev.prateekthakur.spendo.presentation.viewmodels.ExpenseViewModel
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SettingsScreen(
     expenseViewModel: ExpenseViewModel,
     navHostController: NavHostController,
+) {
+    SettingsScreenContent(
+        expenseAction = expenseViewModel::invoke,
+        onBack = { navHostController.safePopBackStack() }
+    )
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun SettingsScreenContent(
+    expenseAction: (ExpenseIntent) -> Unit,
+    onBack: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-
     var showClearDialog by remember { mutableStateOf(false) }
 
     Scaffold(
@@ -52,9 +62,7 @@ fun SettingsScreen(
             TopAppBar(title = {
                 Text("Settings")
             }, navigationIcon = {
-                IconButton(onClick = {
-                    navHostController.safePopBackStack()
-                }) {
+                IconButton(onClick = onBack) {
                     Icon(Icons.AutoMirrored.Default.ArrowBack, contentDescription = null)
                 }
             })
@@ -86,12 +94,11 @@ fun SettingsScreen(
         ClearExpensesDialog(onDismissRequest = {
             showClearDialog = false
         }, onConfirm = {
-            expenseViewModel(ExpenseIntent.Clear)
+            expenseAction(ExpenseIntent.Clear)
             showClearDialog = false
         })
     }
 }
-
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

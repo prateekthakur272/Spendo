@@ -32,6 +32,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
+import dev.prateekthakur.spendo.domain.models.Expense
 import dev.prateekthakur.spendo.domain.models.ExpenseType
 import dev.prateekthakur.spendo.domain.models.PeriodFilter
 import dev.prateekthakur.spendo.presentation.composables.DisplayAmount
@@ -44,12 +45,32 @@ import dev.prateekthakur.spendo.presentation.viewmodels.ExpenseViewModel
 fun ExpensesScreen(
     expenseViewModel: ExpenseViewModel,
     navHostController: NavHostController,
-    modifier: Modifier = Modifier,
     typeFilter: ExpenseType? = null,
     periodFilter: PeriodFilter? = null
 ) {
 
     val expenses by expenseViewModel.state.collectAsStateWithLifecycle()
+
+    ExpensesScreenContent(
+        expenses = expenses,
+        expenseAction = expenseViewModel::invoke,
+        onBack = { navHostController.safePopBackStack() },
+        periodFilter = periodFilter,
+        typeFilter = typeFilter
+    )
+}
+
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun ExpensesScreenContent(
+    expenses: List<Expense>,
+    expenseAction: (ExpenseIntent) -> Unit,
+    onBack: () -> Unit,
+    modifier: Modifier = Modifier,
+    typeFilter: ExpenseType? = null,
+    periodFilter: PeriodFilter? = null,
+) {
 
     var selectedPeriod by rememberSaveable {
         mutableStateOf(
@@ -59,15 +80,13 @@ fun ExpensesScreen(
     var selectedType by rememberSaveable { mutableStateOf(typeFilter) }
 
     LaunchedEffect(selectedPeriod, selectedType) {
-        expenseViewModel(ExpenseIntent.Get(selectedPeriod, selectedType))
+        expenseAction(ExpenseIntent.Get(selectedPeriod, selectedType))
     }
 
     Scaffold(
         containerColor = MaterialTheme.colorScheme.surface, topBar = {
             TopAppBar(title = { Text("Expenses") }, navigationIcon = {
-                IconButton(onClick = {
-                    navHostController.safePopBackStack()
-                }) {
+                IconButton(onClick = onBack) {
                     Icon(Icons.AutoMirrored.Default.ArrowBack, contentDescription = null)
                 }
             })

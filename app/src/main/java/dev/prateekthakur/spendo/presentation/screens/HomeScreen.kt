@@ -43,6 +43,7 @@ import dev.prateekthakur.spendo.R
 import dev.prateekthakur.spendo.domain.models.CategoryExpense
 import dev.prateekthakur.spendo.domain.models.Expense
 import dev.prateekthakur.spendo.domain.models.ExpenseType
+import dev.prateekthakur.spendo.domain.models.categoryExpenses
 import dev.prateekthakur.spendo.presentation.composables.CategoryExpenseListItem
 import dev.prateekthakur.spendo.presentation.composables.DisplayAmount
 import dev.prateekthakur.spendo.presentation.composables.ExpenseListItem
@@ -54,26 +55,39 @@ import dev.prateekthakur.spendo.utils.getColor
 fun HomeScreen(
     expenseViewModel: ExpenseViewModel,
     navHostController: NavHostController,
+) {
+    val expenses by expenseViewModel.state.collectAsStateWithLifecycle()
+
+    HomeScreenContent(
+        expenses = expenses,
+        expenseAction = expenseViewModel::invoke,
+        onSettingsClick = { navHostController.navigate("/settings") },
+        onCreateClick = { navHostController.navigate("/create") },
+        onViewExpenses = { navHostController.navigate("/expenses") },
+        onClickCategoryExpense = { navHostController.navigate("/expenses?type=$it") })
+}
+
+@Composable
+fun HomeScreenContent(
+    expenses: List<Expense>,
+    expenseAction: (ExpenseIntent) -> Unit,
+    onSettingsClick: () -> Unit,
+    onCreateClick: () -> Unit,
+    onViewExpenses: () -> Unit,
+    onClickCategoryExpense: (ExpenseType) -> Unit,
     modifier: Modifier = Modifier
 ) {
 
-    val expenses by expenseViewModel.state.collectAsStateWithLifecycle()
-    val categoryExpenses = expenses.groupBy { it.type }.map { (k, v) ->
-        CategoryExpense(type = k, total = v.map { it.amount }.reduceOrNull { a, b -> a + b } ?: 0.0)
-    }
+    val categoryExpenses = expenses.categoryExpenses()
 
     LaunchedEffect(Unit) {
-        expenseViewModel(ExpenseIntent.Get())
+        expenseAction(ExpenseIntent.Get())
     }
 
     Scaffold(containerColor = MaterialTheme.colorScheme.surface, topBar = {
-        AppBar(onSettingsClick = {
-            navHostController.navigate("/settings")
-        })
+        AppBar(onSettingsClick = onSettingsClick)
     }, floatingActionButton = {
-        FloatingActionButton(onClick = {
-            navHostController.navigate("/create")
-        }) {
+        FloatingActionButton(onClick = onCreateClick) {
             Icon(
                 Icons.Default.Add,
                 contentDescription = null,
@@ -91,16 +105,14 @@ fun HomeScreen(
                 Spacer(modifier = Modifier.height(16.dp))
             }
             item {
-                ExpenseCategories(categoryExpenses, onAction = {
-                    navHostController.navigate("/expenses")
-                }, onClickItem = {
-                    navHostController.navigate("/expenses?type=$it")
-                })
+                ExpenseCategories(
+                    categoryExpenses,
+                    onAction = onViewExpenses,
+                    onClickItem = onClickCategoryExpense
+                )
             }
             item {
-                RecentExpenses(expenses.take(5), onAction = {
-                    navHostController.navigate("/expenses")
-                })
+                RecentExpenses(expenses.take(5), onAction = onViewExpenses)
             }
         }
     }
@@ -141,14 +153,13 @@ fun AppBar(onSettingsClick: () -> Unit, modifier: Modifier = Modifier) {
     TopAppBar(title = {
         Text(stringResource(R.string.app_name))
     }, actions = {
-        Box(
-            modifier = Modifier
-                .size(40.dp)
-                .clip(RoundedCornerShape(8.dp))
-                .clickable {
-                    onSettingsClick()
-                }
-                .background(MaterialTheme.colorScheme.surfaceVariant),
+        Box(modifier = Modifier
+            .size(40.dp)
+            .clip(RoundedCornerShape(8.dp))
+            .clickable {
+                onSettingsClick()
+            }
+            .background(MaterialTheme.colorScheme.surfaceVariant),
             contentAlignment = Alignment.Center) {
             Icon(Icons.Outlined.Settings, contentDescription = null)
         }
@@ -201,5 +212,4 @@ fun ExpenseCategories(
             Spacer(modifier = Modifier.height(16.dp))
         }
     }
-
 }
