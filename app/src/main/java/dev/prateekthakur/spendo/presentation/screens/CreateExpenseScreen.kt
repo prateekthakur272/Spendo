@@ -36,6 +36,7 @@ import dev.prateekthakur.spendo.R
 import dev.prateekthakur.spendo.domain.models.Expense
 import dev.prateekthakur.spendo.domain.models.ExpenseType
 import dev.prateekthakur.spendo.presentation.composables.InvisibleTextField
+import dev.prateekthakur.spendo.presentation.viewmodels.ExpenseIntent
 import dev.prateekthakur.spendo.presentation.viewmodels.ExpenseViewModel
 import dev.prateekthakur.spendo.utils.getColor
 
@@ -94,7 +95,7 @@ fun CreateExpenseScreen(expenseViewModel: ExpenseViewModel, navHostController: N
                 amount = amount.dropLast(1)
             }, onSubmit = {
                 amount.toDoubleOrNull()?.let {
-                    expenseViewModel.createExpense(Expense(amount = it, type = type))
+                    expenseViewModel(ExpenseIntent.Create(Expense(amount = it, type = type)))
                     navHostController.safePopBackStack()
                 }
             })

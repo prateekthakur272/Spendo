@@ -45,6 +45,7 @@ import dev.prateekthakur.spendo.domain.models.Expense
 import dev.prateekthakur.spendo.presentation.composables.CategoryExpenseListItem
 import dev.prateekthakur.spendo.presentation.composables.DisplayAmount
 import dev.prateekthakur.spendo.presentation.composables.ExpenseListItem
+import dev.prateekthakur.spendo.presentation.viewmodels.ExpenseIntent
 import dev.prateekthakur.spendo.presentation.viewmodels.ExpenseViewModel
 import dev.prateekthakur.spendo.utils.getColor
 
@@ -61,7 +62,7 @@ fun HomeScreen(
     }
 
     LaunchedEffect(Unit) {
-        expenseViewModel.getExpenses()
+        expenseViewModel(ExpenseIntent.Get())
     }
 
     Scaffold(containerColor = MaterialTheme.colorScheme.surface, topBar = {

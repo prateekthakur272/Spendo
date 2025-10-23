@@ -34,6 +34,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.navigation.NavHostController
+import dev.prateekthakur.spendo.presentation.viewmodels.ExpenseIntent
 import dev.prateekthakur.spendo.presentation.viewmodels.ExpenseViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -85,7 +86,7 @@ fun SettingsScreen(
         ClearExpensesDialog(onDismissRequest = {
             showClearDialog = false
         }, onConfirm = {
-            expenseViewModel.clearExpenses()
+            expenseViewModel(ExpenseIntent.Clear)
             showClearDialog = false
         })
     }

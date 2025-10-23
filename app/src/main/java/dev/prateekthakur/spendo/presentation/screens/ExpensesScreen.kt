@@ -36,6 +36,7 @@ import dev.prateekthakur.spendo.domain.models.ExpenseType
 import dev.prateekthakur.spendo.domain.models.PeriodFilter
 import dev.prateekthakur.spendo.presentation.composables.DisplayAmount
 import dev.prateekthakur.spendo.presentation.composables.ExpenseListItem
+import dev.prateekthakur.spendo.presentation.viewmodels.ExpenseIntent
 import dev.prateekthakur.spendo.presentation.viewmodels.ExpenseViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -58,7 +59,7 @@ fun ExpensesScreen(
     var selectedType by rememberSaveable { mutableStateOf(typeFilter) }
 
     LaunchedEffect(selectedPeriod, selectedType) {
-        expenseViewModel.getExpenses(selectedPeriod, selectedType)
+        expenseViewModel(ExpenseIntent.Get(selectedPeriod, selectedType))
     }
 
     Scaffold(
