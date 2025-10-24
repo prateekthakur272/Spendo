@@ -21,7 +21,6 @@ fun AppNavHost(
     startDestination: String,
     navHostController: NavHostController = rememberNavController()
 ) {
-    val expenseViewModel: ExpenseViewModel = koinViewModel()
     val smsPermissionState = rememberPermissionState(permission = Manifest.permission.RECEIVE_SMS)
 
     LaunchedEffect(Unit) {
@@ -30,18 +29,21 @@ fun AppNavHost(
 
     NavHost(navController = navHostController, startDestination = startDestination) {
         composable("/") {
+            val expenseViewModel: ExpenseViewModel = koinViewModel()
             HomeScreen(
                 expenseViewModel = expenseViewModel,
                 navHostController = navHostController
             )
         }
         composable("/create") {
+            val expenseViewModel: ExpenseViewModel = koinViewModel()
             CreateExpenseScreen(
                 expenseViewModel = expenseViewModel,
                 navHostController = navHostController
             )
         }
         composable("/expenses?type={type}&periodFilter={periodFilter}") {
+            val expenseViewModel: ExpenseViewModel = koinViewModel()
             val type = it.arguments?.getString("type")
             val periodFilter = it.arguments?.getString("periodFilter")
             ExpensesScreen(
@@ -52,6 +54,7 @@ fun AppNavHost(
             )
         }
         composable("/settings") {
+            val expenseViewModel: ExpenseViewModel = koinViewModel()
             SettingsScreen(expenseViewModel = expenseViewModel, navHostController = navHostController)
         }
     }

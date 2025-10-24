@@ -28,6 +28,9 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -47,6 +50,7 @@ import dev.prateekthakur.spendo.domain.models.categoryExpenses
 import dev.prateekthakur.spendo.presentation.composables.CategoryExpenseListItem
 import dev.prateekthakur.spendo.presentation.composables.DisplayAmount
 import dev.prateekthakur.spendo.presentation.composables.ExpenseListItem
+import dev.prateekthakur.spendo.presentation.composables.ExpenseMenu
 import dev.prateekthakur.spendo.presentation.viewmodels.ExpenseIntent
 import dev.prateekthakur.spendo.presentation.viewmodels.ExpenseViewModel
 import dev.prateekthakur.spendo.utils.getColor
@@ -67,6 +71,7 @@ fun HomeScreen(
         onClickCategoryExpense = { navHostController.navigate("/expenses?type=$it") })
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreenContent(
     expenses: List<Expense>,
@@ -79,13 +84,29 @@ fun HomeScreenContent(
 ) {
 
     val categoryExpenses = expenses.categoryExpenses()
+    var selectedExpense by remember { mutableStateOf<Expense?>(null) }
 
     LaunchedEffect(Unit) {
         expenseAction(ExpenseIntent.Get())
     }
 
     Scaffold(containerColor = MaterialTheme.colorScheme.surface, topBar = {
-        AppBar(onSettingsClick = onSettingsClick)
+        TopAppBar(title = {
+            Text(stringResource(R.string.app_name))
+        }, actions = {
+            Box(
+                modifier = Modifier
+                    .size(40.dp)
+                    .clip(RoundedCornerShape(8.dp))
+                    .clickable {
+                        onSettingsClick()
+                    }
+                    .background(MaterialTheme.colorScheme.surfaceVariant),
+                contentAlignment = Alignment.Center) {
+                Icon(Icons.Outlined.Settings, contentDescription = null)
+            }
+            Spacer(modifier = Modifier.width(8.dp))
+        })
     }, floatingActionButton = {
         FloatingActionButton(onClick = onCreateClick) {
             Icon(
@@ -105,16 +126,51 @@ fun HomeScreenContent(
                 Spacer(modifier = Modifier.height(16.dp))
             }
             item {
-                ExpenseCategories(
-                    categoryExpenses,
-                    onAction = onViewExpenses,
-                    onClickItem = onClickCategoryExpense
-                )
+                Column(modifier = modifier) {
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+                        Text("Expense per category")
+                        TextButton(onClick = onViewExpenses) {
+                            Text("View all")
+                        }
+                    }
+
+                    categoryExpenses.map {
+                        CategoryExpenseListItem(it, onClick = { onClickCategoryExpense(it.type) })
+                        Spacer(modifier = Modifier.height(16.dp))
+                    }
+                }
             }
             item {
-                RecentExpenses(expenses.take(5), onAction = onViewExpenses)
+                Column(modifier = modifier) {
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+                        Text("Recent expenses")
+                        TextButton(onClick = onViewExpenses) {
+                            Text("View all")
+                        }
+                    }
+
+                    expenses.map {
+                        ExpenseListItem(it, onClick = { selectedExpense = it }, onLongClick = { selectedExpense = it })
+                        Spacer(modifier = Modifier.height(16.dp))
+                    }
+                }
             }
         }
+    }
+
+    selectedExpense?.let {
+        ExpenseMenu(
+            it,
+            onDelete = { expenseAction(ExpenseIntent.Delete(it)) },
+            onCancel = { selectedExpense = null })
     }
 }
 
@@ -143,73 +199,6 @@ fun OverviewCard(categoryExpenses: List<CategoryExpense>, modifier: Modifier = M
                     labelTextStyle = MaterialTheme.typography.labelSmall.copy(color = MaterialTheme.colorScheme.onSurface)
                 )
             )
-        }
-    }
-}
-
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun AppBar(onSettingsClick: () -> Unit, modifier: Modifier = Modifier) {
-    TopAppBar(title = {
-        Text(stringResource(R.string.app_name))
-    }, actions = {
-        Box(modifier = Modifier
-            .size(40.dp)
-            .clip(RoundedCornerShape(8.dp))
-            .clickable {
-                onSettingsClick()
-            }
-            .background(MaterialTheme.colorScheme.surfaceVariant),
-            contentAlignment = Alignment.Center) {
-            Icon(Icons.Outlined.Settings, contentDescription = null)
-        }
-        Spacer(modifier = Modifier.width(8.dp))
-    })
-}
-
-@Composable
-fun RecentExpenses(expenses: List<Expense>, onAction: () -> Unit, modifier: Modifier = Modifier) {
-    Column(modifier = modifier) {
-        Row(
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.SpaceBetween,
-            modifier = Modifier.fillMaxWidth()
-        ) {
-            Text("Recent expenses")
-            TextButton(onClick = onAction) {
-                Text("View all")
-            }
-        }
-
-        expenses.map {
-            ExpenseListItem(it)
-            Spacer(modifier = Modifier.height(16.dp))
-        }
-    }
-}
-
-@Composable
-fun ExpenseCategories(
-    categoryExpenses: List<CategoryExpense>,
-    onAction: () -> Unit,
-    onClickItem: (ExpenseType) -> Unit,
-    modifier: Modifier = Modifier
-) {
-    Column(modifier = modifier) {
-        Row(
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.SpaceBetween,
-            modifier = Modifier.fillMaxWidth()
-        ) {
-            Text("Expense per category")
-            TextButton(onClick = onAction) {
-                Text("View all")
-            }
-        }
-
-        categoryExpenses.map {
-            CategoryExpenseListItem(it, onClick = { onClickItem(it.type) })
-            Spacer(modifier = Modifier.height(16.dp))
         }
     }
 }

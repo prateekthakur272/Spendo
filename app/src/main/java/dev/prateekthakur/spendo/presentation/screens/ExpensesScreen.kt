@@ -25,6 +25,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -37,6 +38,7 @@ import dev.prateekthakur.spendo.domain.models.ExpenseType
 import dev.prateekthakur.spendo.domain.models.PeriodFilter
 import dev.prateekthakur.spendo.presentation.composables.DisplayAmount
 import dev.prateekthakur.spendo.presentation.composables.ExpenseListItem
+import dev.prateekthakur.spendo.presentation.composables.ExpenseMenu
 import dev.prateekthakur.spendo.presentation.viewmodels.ExpenseIntent
 import dev.prateekthakur.spendo.presentation.viewmodels.ExpenseViewModel
 
@@ -78,6 +80,7 @@ fun ExpensesScreenContent(
         )
     }
     var selectedType by rememberSaveable { mutableStateOf(typeFilter) }
+    var selectedExpense by remember { mutableStateOf<Expense?>(null) }
 
     LaunchedEffect(selectedPeriod, selectedType) {
         expenseAction(ExpenseIntent.Get(selectedPeriod, selectedType))
@@ -147,7 +150,10 @@ fun ExpensesScreenContent(
             }
 
             items(expenses) {
-                ExpenseListItem(it)
+                ExpenseListItem(
+                    it,
+                    onClick = { selectedExpense = it },
+                    onLongClick = { selectedExpense = it })
                 Spacer(modifier = Modifier.height(16.dp))
             }
 
@@ -161,5 +167,12 @@ fun ExpensesScreenContent(
                 }
             }
         }
+    }
+
+    selectedExpense?.let {
+        ExpenseMenu(
+            it,
+            onDelete = { expenseAction(ExpenseIntent.Delete(it)) },
+            onCancel = { selectedExpense = null })
     }
 }
