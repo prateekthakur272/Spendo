@@ -8,6 +8,8 @@ Track your expenses automatically without manually entering them. The app reads 
 
 <img width="200" height="600" alt="image" src="https://github.com/user-attachments/assets/a17e405a-9a0f-417f-8158-437cf4bc9563" />
 
+<img width="200" height="600" alt="image" src="https://github.com/user-attachments/assets/5ea2a3e6-950c-4496-a0b9-f67d907edf72" />
+
 <img width="200" height="600" alt="image" src="https://github.com/user-attachments/assets/94b3fae5-9014-47f2-9fef-c0be70b125b0" />
 
 
