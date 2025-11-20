@@ -31,6 +31,7 @@ import dev.prateekthakur.spendo.domain.models.Expense
 import dev.prateekthakur.spendo.domain.models.ExpenseType
 import dev.prateekthakur.spendo.presentation.composables.InvisibleTextField
 import dev.prateekthakur.spendo.presentation.composables.NumberPad
+import dev.prateekthakur.spendo.presentation.navigation.safePopBackStack
 import dev.prateekthakur.spendo.presentation.viewmodels.ExpenseIntent
 import dev.prateekthakur.spendo.presentation.viewmodels.ExpenseViewModel
 import dev.prateekthakur.spendo.utils.getColor

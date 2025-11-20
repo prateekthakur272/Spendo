@@ -39,6 +39,7 @@ import dev.prateekthakur.spendo.domain.models.PeriodFilter
 import dev.prateekthakur.spendo.presentation.composables.DisplayAmount
 import dev.prateekthakur.spendo.presentation.composables.ExpenseListItem
 import dev.prateekthakur.spendo.presentation.composables.ExpenseMenu
+import dev.prateekthakur.spendo.presentation.navigation.safePopBackStack
 import dev.prateekthakur.spendo.presentation.viewmodels.ExpenseIntent
 import dev.prateekthakur.spendo.presentation.viewmodels.ExpenseViewModel
 

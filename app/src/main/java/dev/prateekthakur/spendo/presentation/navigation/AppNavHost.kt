@@ -1,4 +1,4 @@
-package dev.prateekthakur.spendo.presentation.screens
+package dev.prateekthakur.spendo.presentation.navigation
 
 import android.Manifest
 import androidx.compose.runtime.Composable
@@ -8,17 +8,20 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.toRoute
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.rememberPermissionState
-import dev.prateekthakur.spendo.domain.models.ExpenseType
-import dev.prateekthakur.spendo.domain.models.PeriodFilter
+import dev.prateekthakur.spendo.presentation.screens.CreateExpenseScreen
+import dev.prateekthakur.spendo.presentation.screens.ExpensesScreen
+import dev.prateekthakur.spendo.presentation.screens.HomeScreen
+import dev.prateekthakur.spendo.presentation.screens.SettingsScreen
 import dev.prateekthakur.spendo.presentation.viewmodels.ExpenseViewModel
 import org.koin.androidx.compose.koinViewModel
 
 @OptIn(ExperimentalPermissionsApi::class)
 @Composable
 fun AppNavHost(
-    startDestination: String,
+    startDestination: AppRoute,
     navHostController: NavHostController = rememberNavController()
 ) {
     val smsPermissionState = rememberPermissionState(permission = Manifest.permission.RECEIVE_SMS)
@@ -28,40 +31,36 @@ fun AppNavHost(
     }
 
     NavHost(navController = navHostController, startDestination = startDestination) {
-        composable("/") {
+        composable<AppRoute.Home> {
             val expenseViewModel: ExpenseViewModel = koinViewModel()
             HomeScreen(
                 expenseViewModel = expenseViewModel,
                 navHostController = navHostController
             )
         }
-        composable("/create") {
+        composable<AppRoute.CreateExpense> {
             val expenseViewModel: ExpenseViewModel = koinViewModel()
             CreateExpenseScreen(
                 expenseViewModel = expenseViewModel,
                 navHostController = navHostController
             )
         }
-        composable("/expenses?type={type}&periodFilter={periodFilter}") {
+        composable<AppRoute.Expenses> {
             val expenseViewModel: ExpenseViewModel = koinViewModel()
-            val type = it.arguments?.getString("type")
-            val periodFilter = it.arguments?.getString("periodFilter")
+            val route = it.toRoute<AppRoute.Expenses>()
             ExpensesScreen(
                 expenseViewModel = expenseViewModel,
                 navHostController = navHostController,
-                typeFilter = type?.runCatching { ExpenseType.valueOf(type) }?.getOrNull(),
-                periodFilter = periodFilter?.runCatching { PeriodFilter.valueOf(periodFilter) }?.getOrNull()
+                typeFilter = route.type,
+                periodFilter = route.periodFilter
             )
         }
-        composable("/settings") {
+        composable<AppRoute.Settings> {
             val expenseViewModel: ExpenseViewModel = koinViewModel()
-            SettingsScreen(expenseViewModel = expenseViewModel, navHostController = navHostController)
+            SettingsScreen(
+                expenseViewModel = expenseViewModel,
+                navHostController = navHostController
+            )
         }
-    }
-}
-
-fun NavController.safePopBackStack() {
-    if (this.previousBackStackEntry != null) {
-        this.popBackStack()
     }
 }

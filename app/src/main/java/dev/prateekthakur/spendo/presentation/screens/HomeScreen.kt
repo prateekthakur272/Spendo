@@ -51,6 +51,7 @@ import dev.prateekthakur.spendo.presentation.composables.CategoryExpenseListItem
 import dev.prateekthakur.spendo.presentation.composables.DisplayAmount
 import dev.prateekthakur.spendo.presentation.composables.ExpenseListItem
 import dev.prateekthakur.spendo.presentation.composables.ExpenseMenu
+import dev.prateekthakur.spendo.presentation.navigation.AppRoute
 import dev.prateekthakur.spendo.presentation.viewmodels.ExpenseIntent
 import dev.prateekthakur.spendo.presentation.viewmodels.ExpenseViewModel
 import dev.prateekthakur.spendo.utils.getColor
@@ -65,10 +66,10 @@ fun HomeScreen(
     HomeScreenContent(
         expenses = expenses,
         expenseAction = expenseViewModel::invoke,
-        onSettingsClick = { navHostController.navigate("/settings") },
-        onCreateClick = { navHostController.navigate("/create") },
-        onViewExpenses = { navHostController.navigate("/expenses") },
-        onClickCategoryExpense = { navHostController.navigate("/expenses?type=$it") })
+        onSettingsClick = { navHostController.navigate(AppRoute.Settings) },
+        onCreateClick = { navHostController.navigate(AppRoute.CreateExpense) },
+        onViewExpenses = { navHostController.navigate(AppRoute.Expenses()) },
+        onClickCategoryExpense = { navHostController.navigate(AppRoute.Expenses(type = it)) })
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
