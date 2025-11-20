@@ -1,8 +1,8 @@
 package dev.prateekthakur.spendo.presentation.navigation
 
-import androidx.navigation.NavController
+import androidx.navigation.NavHostController
 
-fun NavController.safePopBackStack() {
+fun NavHostController.safePopBackStack() {
     if (this.previousBackStackEntry != null) {
         this.popBackStack()
     }
